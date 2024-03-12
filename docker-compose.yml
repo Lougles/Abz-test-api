@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  abz-server:
+    restart: unless-stopped
+    image: postgres:13
+    container_name: abz-container
+    environment:
+      POSTGRES_DB: abz-api
+      POSTGRES_USER: abz-user
+      POSTGRES_PASSWORD: abz-password
+    ports:
+      - "5435:5432"
+    volumes:
+      - "abz-data:/var/lib/postgresql/data"
+    networks:
+      - abz-network
+
+volumes:
+  abz-data:
+
+networks:
+  abz-network:
+    driver: bridge
