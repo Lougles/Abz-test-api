@@ -9,6 +9,9 @@ import {
   CONFIG_DB_PORT,
   CONFIG_DB_USERNAME,
 } from '../config';
+import { TokenEntity } from './entity/token.entity';
+import { TokenService } from './services/token.service';
+import { TokenController } from './controllers/token.controller';
 
 @Module({
   imports: [
@@ -19,11 +22,11 @@ import {
       username: CONFIG_DB_USERNAME,
       password: CONFIG_DB_PASSWORD,
       database: CONFIG_DB_NAME,
-      entities: [],
+      entities: [TokenEntity],
       synchronize: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, TokenController],
+  providers: [AppService, TokenService],
 })
 export class AppModule {}
