@@ -25,6 +25,8 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  app.setGlobalPrefix('api/v1');
+
   await app.listen(3000);
 }
 bootstrap();

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   CONFIG_DB_HOST,
@@ -9,9 +7,12 @@ import {
   CONFIG_DB_PORT,
   CONFIG_DB_USERNAME,
 } from '../config';
-import { TokenEntity } from './entity/token.entity';
+import { Token } from './entity/token.entity';
 import { TokenService } from './services/token.service';
 import { TokenController } from './controllers/token.controller';
+import { Position } from './entity/position.entity';
+import { PositionController } from './controllers/position.controller';
+import { PositionService } from './services/position.service';
 
 @Module({
   imports: [
@@ -22,11 +23,11 @@ import { TokenController } from './controllers/token.controller';
       username: CONFIG_DB_USERNAME,
       password: CONFIG_DB_PASSWORD,
       database: CONFIG_DB_NAME,
-      entities: [TokenEntity],
+      entities: [Token, Position],
       synchronize: true,
     }),
   ],
-  controllers: [AppController, TokenController],
-  providers: [AppService, TokenService],
+  controllers: [TokenController, PositionController],
+  providers: [TokenService, PositionService],
 })
 export class AppModule {}
