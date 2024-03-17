@@ -9,10 +9,11 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUser {
+export class UserRequestModel {
   @ApiProperty({
     description: 'User name',
     example: 'John Doe',
+    required: true,
   })
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
@@ -22,6 +23,7 @@ export class CreateUser {
   @ApiProperty({
     description: 'User email',
     example: 'example@example.com',
+    required: true,
   })
   @IsEmail({}, { message: 'Invalid email format' })
   @IsNotEmpty({ message: 'Email is required' })
@@ -31,20 +33,22 @@ export class CreateUser {
   @ApiProperty({
     description: 'Phone number',
     example: '+380123456789',
+    required: true,
   })
   @IsString()
   @IsNotEmpty({ message: 'Phone number is required' })
   @Matches(/^\+380([0-9]{9})$/, {
-    message: 'Phone number must start with +380 and be followed by 9 digits',
+    message: 'User phone number. Number should start with code of Ukraine +380',
   })
   phone: string;
 
   @ApiProperty({
     description: 'User position id',
     example: 1,
+    required: true,
   })
-  @IsInt({ message: 'Position ID must be an integer' })
-  @Min(1, { message: 'Position ID must be at least 1' })
+  // @IsInt({ message: 'Position ID must be an integer' })
+  // @Min(1, { message: 'Position ID must be at least 1' })
   @IsNotEmpty({ message: 'Position ID is required' })
   position_id: number;
 }

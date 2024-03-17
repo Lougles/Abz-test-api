@@ -13,6 +13,8 @@ import { TokenController } from './controllers/token.controller';
 import { Position } from './entity/position.entity';
 import { PositionController } from './controllers/position.controller';
 import { PositionService } from './services/position.service';
+import { UserController } from './controllers/user.controller';
+import { UserService } from './services/user.service';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { PositionService } from './services/position.service';
       synchronize: true,
     }),
   ],
-  controllers: [TokenController, PositionController],
-  providers: [TokenService, PositionService],
+  controllers: [TokenController, PositionController, UserController],
+  providers: [TokenService, PositionService, UserService],
 })
 export class AppModule {}
