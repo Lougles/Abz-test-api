@@ -1,12 +1,12 @@
 import { diskStorage } from 'multer';
-import * as path from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomPhotoException } from './custom-validation.exception';
+import * as path from 'path';
 
 export function ImageFileInterceptor(fieldName: string) {
   return FileInterceptor(fieldName, {
     storage: diskStorage({
-      destination: './uploads/img',
+      destination: './uploads/user',
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         const fileExtension = path.extname(file.originalname);

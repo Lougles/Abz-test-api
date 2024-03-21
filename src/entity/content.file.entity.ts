@@ -29,6 +29,6 @@ export class ContentFile extends BaseEntity {
   @Column({ name: 'is_deleted', type: 'boolean', default: false })
   isDeleted: boolean;
 
-  @OneToOne(() => User, (user: User) => user.userImg)
-  user: User;
+  // @OneToOne(() => User, (user: User) => user.userImg)
+  // user: User;
 }

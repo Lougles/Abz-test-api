@@ -5,7 +5,6 @@ import {
   IsString,
   Length,
   Matches,
-  Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -51,4 +50,34 @@ export class UserRequestModel {
   // @Min(1, { message: 'Position ID must be at least 1' })
   @IsNotEmpty({ message: 'Position ID is required' })
   position_id: number;
+}
+
+export class AllUsersRequestModel {
+  @ApiProperty({
+    description: 'Specify the page that you want to retrieve',
+    example: 1,
+    minimum: 1,
+    default: 1,
+    required: false,
+  })
+  page?: number;
+
+  @ApiProperty({
+    description: 'Specify the missing record number',
+    example: 0,
+    minimum: 0,
+    default: 0,
+    required: false,
+  })
+  offset?: number;
+
+  @ApiProperty({
+    description: 'Specify the amount of items that will be retrieved per page',
+    example: 5,
+    default: 5,
+    minimum: 1,
+    maximum: 100,
+    required: false,
+  })
+  count?: number;
 }

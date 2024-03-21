@@ -17,9 +17,10 @@ export class TokenService {
   }
 
   async getToken(token: string): Promise<Token | undefined> {
-    return await this.EntityManager.findOne(Token, {
+    const get = await this.EntityManager.findOne(Token, {
       where: { token, isUsed: false },
     });
+    return get;
   }
 
   async markTokenAsUsed(tokenString: string): Promise<void> {

@@ -13,7 +13,7 @@ export class PositionService {
   }
 
   async findOne(id: number): Promise<Position> {
-    return await this.entityManager.findOne(Position, { where: { id } });
+    return await this.entityManager.findOne(Position, { where: { id: id } });
   }
 
   async addPosition(newPosition: string): Promise<PositionResponseModel> {

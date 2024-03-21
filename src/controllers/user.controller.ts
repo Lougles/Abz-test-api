@@ -7,51 +7,73 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ImageFileInterceptor } from '../utils/file.interceptor';
-import { UserRequestModel } from './dto/user.request.model';
+import {
+  AllUsersRequestModel,
+  UserRequestModel,
+} from './dto/user.request.model';
 import { UserService } from '../services/user.service';
 import {
+  AllUserResponseModel,
+  exampleUserResponseErrorModel,
   UserResponseErrorModel,
   UserResponseModel,
 } from './dto/user.response.model';
 import { PhotoValidationInterceptor } from '../utils/photo.validation.interceptor';
+import { CustomTokenException } from '../utils/custom-validation.exception';
+import { TokenService } from '../services/token.service';
+import { ValidToken } from '../utils/valid-token.decorator';
+import { ApiBadRequestResponse, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly tokenService: TokenService,
+  ) {}
 
-  @Get()
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async getAllUsers() {}
+  @Get('getAll')
+  async getAllUsers(
+    @Body() body: AllUsersRequestModel,
+  ): Promise<AllUserResponseModel> {
+    const getAllUsers = await this.userService.getPaginatedUsers(body);
+    return getAllUsers;
+  }
 
+  @ApiResponse({
+    status: 200,
+    description: 'Створення користувача',
+    type: UserResponseModel,
+  })
   @Post('create')
   @UseInterceptors(ImageFileInterceptor('photo'), PhotoValidationInterceptor)
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    schema: {
+      example: exampleUserResponseErrorModel,
+    },
+  })
   async createUser(
     @UploadedFile() photo: Express.Multer.File,
     @Body() body: UserRequestModel,
-    // ): Promise<UserResponseModel | UserResponseErrorModel> {
-  ) {
-    console.log(body);
-    console.log(photo);
-    // try {
-    //   // Attempt to create the user with the provided photo and body
-    //   const createUserResult = await this.userService.create(photo, body);
-    //
-    //   // You might have some logic to determine if the creation was successful
-    //   // For now, let's assume the result has a 'success' property
-    //   if (createUserResult.success) {
-    //     return createUserResult;
-    //   } else {
-    //     // Return an error response if not successful
-    //     throw new YourCustomException(createUserResult);
-    //   }
-    // } catch (error) {
-    //   // If there's an error, you can format and throw a custom exception
-    //   // that your Global Exception Filter will catch and format for the response
-    //   throw new YourCustomException({
-    //     success: false,
-    //     message: 'Your error message here',
-    //     fails: error.details, // This should be structured as per your requirements
-    //   });
-    // }
+    @ValidToken() authToken: string,
+  ): Promise<UserResponseModel | UserResponseErrorModel> {
+    const checkedToken = await this.validateToken(authToken);
+    const { success, user_id, message } = await this.userService.create(
+      photo,
+      body,
+      checkedToken,
+    );
+    return { success, user_id, message };
+  }
+  private async validateToken(token: string): Promise<string> {
+    const checkedToken = await this.tokenService.getToken(token);
+    const TOKEN_EXPIRATION_TIME = 40 * 60 * 1000;
+    if (!checkedToken) {
+      throw new CustomTokenException('The token already used or incorrect.');
+    }
+    if (Date.now() - checkedToken.createdAt.getTime() > TOKEN_EXPIRATION_TIME) {
+      throw new CustomTokenException('The token expired.');
+    }
+    return checkedToken.token;
   }
 }
