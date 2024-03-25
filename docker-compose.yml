@@ -1,5 +1,40 @@
-version: '3.8'
-
+#version: '3.8'
+#
+#services:
+#  abz-api:
+#    build: .
+#    restart: unless-stopped
+#    ports:
+#      - "3001:3001"
+#    environment:
+#      # Добавьте сюда переменные окружения, необходимые для подключения к базе данных
+#      DATABASE_URL: postgres://abz-user:abz-password@abz-server:5432/abz-api
+#    depends_on:
+#      - abz-server
+#    networks:
+#      - abz-network
+#
+#  abz-server:
+#    restart: unless-stopped
+#    image: postgres:13
+#    container_name: abz-container
+#    environment:
+#      POSTGRES_DB: abz-api
+#      POSTGRES_USER: abz-user
+#      POSTGRES_PASSWORD: abz-password
+#    ports:
+#      - "5435:5432"
+#    volumes:
+#      - "abz-data:/var/lib/postgresql/data"
+#    networks:
+#      - abz-network
+#
+#volumes:
+#  abz-data:
+#
+#networks:
+#  abz-network:
+#    driver: bridge
 services:
   abz-api:
     build: .
@@ -7,31 +42,6 @@ services:
     ports:
       - "3001:3001"
     environment:
-      # Добавьте сюда переменные окружения, необходимые для подключения к базе данных
-      DATABASE_URL: postgres://abz-user:abz-password@abz-server:5432/abz-api
-    depends_on:
-      - abz-server
+      DATABASE_URL: postgresql://postgres:HGWOPllzyAfmCCcXKGWBWxBjRapoajIz@roundhouse.proxy.rlwy.net:57891/railway
     networks:
       - abz-network
-
-  abz-server:
-    restart: unless-stopped
-    image: postgres:13
-    container_name: abz-container
-    environment:
-      POSTGRES_DB: abz-api
-      POSTGRES_USER: abz-user
-      POSTGRES_PASSWORD: abz-password
-    ports:
-      - "5435:5432"
-    volumes:
-      - "abz-data:/var/lib/postgresql/data"
-    networks:
-      - abz-network
-
-volumes:
-  abz-data:
-
-networks:
-  abz-network:
-    driver: bridge
