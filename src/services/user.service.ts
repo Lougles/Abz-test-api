@@ -55,7 +55,7 @@ export class UserService {
       position: user.position.name,
       position_id: user.position.id.toString(),
       registration_timestamp: Math.floor(user.createdAt.getTime() / 1000),
-      photo: `${DOMAIN_NAME}${user.photo.path}`,
+      photo: `${DOMAIN_NAME}/${user.photo.path}`,
     }));
 
     const nextPage =
@@ -70,10 +70,10 @@ export class UserService {
       count: count,
       links: {
         next_url: nextPage
-          ? `your-api-endpoint/users?count=${count}&offset=${nextPage}`
+          ? `${DOMAIN_NAME}/users?count=${count}&offset=${nextPage}`
           : null,
         prev_url: prevPage
-          ? `your-api-endpoint/users?count=${count}&offset=${prevPage}`
+          ? `${DOMAIN_NAME}/users?count=${count}&offset=${prevPage}`
           : null,
       },
       users: usersResponse,
