@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -33,9 +35,16 @@ export class UserController {
 
   @Get('getAll')
   async getAllUsers(
-    @Body() body: AllUsersRequestModel,
+    @Query() query: AllUsersRequestModel,
   ): Promise<AllUserResponseModel> {
-    const getAllUsers = await this.userService.getPaginatedUsers(body);
+    const page = query.page ? parseInt(query.page, 10) : 0;
+    const count = query.count ? parseInt(query.count, 10) : 10;
+    const offset = query.offset ? parseInt(query.offset, 10) : page * count;
+    const getAllUsers = await this.userService.getPaginatedUsers(
+      count,
+      offset,
+      page,
+    );
     return getAllUsers;
   }
 

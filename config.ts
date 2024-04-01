@@ -11,4 +11,5 @@ export const CONFIG_DB_PASSWORD = process.env.DB_PASSWORD;
 export const CONFIG_DB_NAME = process.env.DB_NAME;
 export const TINY_SECRET = process.env.TINY_SECRET;
 export const DOMAIN_NAME = process.env.DOMAIN_NAME;
+export const FULL_DOMAIN_NAME = process.env.FULL_DOMAIN_NAME;
 export const PORT = process.env.PORT || 3000;

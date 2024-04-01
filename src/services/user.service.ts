@@ -10,7 +10,7 @@ import { ContentFileService } from './content.file.service';
 import { PositionService } from './position.service';
 import { CustomExceptions } from '../utils/custom-validation.exception';
 import { AllUserResponseModel } from '../controllers/dto/user.response.model';
-import { DOMAIN_NAME } from '../../config';
+import { DOMAIN_NAME, FULL_DOMAIN_NAME } from '../../config';
 
 @Injectable()
 export class UserService {
@@ -21,11 +21,7 @@ export class UserService {
     private readonly positionService: PositionService,
   ) {}
 
-  async getPaginatedUsers({
-    count,
-    offset,
-    page,
-  }: AllUsersRequestModel): Promise<AllUserResponseModel> {
+  async getPaginatedUsers(count, offset, page): Promise<AllUserResponseModel> {
     const options: FindManyOptions<User> = {
       order: {
         createdAt: 'DESC',
@@ -70,10 +66,10 @@ export class UserService {
       count: count,
       links: {
         next_url: nextPage
-          ? `${DOMAIN_NAME}/users?count=${count}&offset=${nextPage}`
+          ? `${FULL_DOMAIN_NAME}/users?count=${count}&offset=${nextPage}`
           : null,
         prev_url: prevPage
-          ? `${DOMAIN_NAME}/users?count=${count}&offset=${prevPage}`
+          ? `${FULL_DOMAIN_NAME}/users?count=${count}&offset=${prevPage}`
           : null,
       },
       users: usersResponse,

@@ -1,7 +1,7 @@
 import {
   IsEmail,
-  IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Matches,
@@ -60,7 +60,8 @@ export class AllUsersRequestModel {
     default: 1,
     required: false,
   })
-  page?: number;
+  @IsOptional()
+  page: string;
 
   @ApiProperty({
     description: 'Specify the missing record number',
@@ -69,7 +70,8 @@ export class AllUsersRequestModel {
     default: 0,
     required: false,
   })
-  offset?: number;
+  @IsOptional()
+  offset: string;
 
   @ApiProperty({
     description: 'Specify the amount of items that will be retrieved per page',
@@ -79,5 +81,6 @@ export class AllUsersRequestModel {
     maximum: 100,
     required: false,
   })
-  count?: number;
+  @IsOptional()
+  count: string;
 }
