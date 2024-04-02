@@ -1,14 +1,15 @@
 import { EntityManager, FindManyOptions } from 'typeorm';
 import { User } from '../entity/user.entity';
-import {
-  AllUsersRequestModel,
-  UserRequestModel,
-} from '../controllers/dto/user.request.model';
+import { UserRequestModel } from '../controllers/dto/user.request.model';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { ContentFileService } from './content.file.service';
 import { PositionService } from './position.service';
-import { CustomExceptions } from '../utils/custom-validation.exception';
+import {
+  CustomExceptions,
+  CustomMessageExceptions,
+  CustomValidationException,
+} from '../utils/custom-validation.exception';
 import { AllUserResponseModel } from '../controllers/dto/user.response.model';
 import { DOMAIN_NAME, FULL_DOMAIN_NAME } from '../../config';
 
@@ -92,10 +93,19 @@ export class UserService {
     }
     const position = await this.positionService.findOne(+body.position_id);
     if (!position) {
-      throw new CustomExceptions(
+      throw new CustomMessageExceptions(
         'position_id is not found!',
+        HttpStatus.CONFLICT,
+      );
+    }
+    const existingUser = await this.entityManager.findOne(User, {
+      where: [{ email: body.email }, { phone: body.phone }],
+    });
+    if (existingUser) {
+      throw new CustomExceptions(
+        'User with this phone or email already exist!',
         'position_id',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.CONFLICT,
       );
     }
     const createUser = new User();
@@ -104,8 +114,6 @@ export class UserService {
     createUser.phone = body.phone;
     createUser.position = position;
     createUser.photo = savedPhoto;
-    // createUser.profileImageId = savePhoto.id;
-    // createUser.filePath = savePhoto.path;
     await this.entityManager.save(User, createUser);
     await this.tokenService.markTokenAsUsed(token);
     return {

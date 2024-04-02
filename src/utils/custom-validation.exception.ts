@@ -41,3 +41,13 @@ export class CustomExceptions extends HttpException {
     super(response, status);
   }
 }
+
+export class CustomMessageExceptions extends HttpException {
+  constructor(errorText: string, status: number) {
+    const response = {
+      success: false,
+      message: errorText,
+    };
+    super(response, status);
+  }
+}
