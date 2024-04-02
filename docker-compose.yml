@@ -43,5 +43,7 @@ services:
       - "3001:3001"
     environment:
       DATABASE_URL: postgresql://postgres:HGWOPllzyAfmCCcXKGWBWxBjRapoajIz@roundhouse.proxy.rlwy.net:57891/railway
+    volumes:
+      - ./uploads:/usr/src/app/uploads
     networks:
       - abz-network
