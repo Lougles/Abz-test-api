@@ -101,10 +101,11 @@ export class UserService implements OnModuleInit {
     const nextPage =
       options.skip + count < totalUsers ? options.skip + count + 1 : null;
     const prevPage = options.skip > 0 ? options.skip - count + 1 : null;
+    const currentPage = options.skip / count + 1;
 
     return {
       success: true,
-      page: page,
+      page: page ? page : currentPage,
       total_pages: Math.ceil(totalUsers / count),
       total_users: totalUsers,
       count: count,
