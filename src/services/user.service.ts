@@ -71,18 +71,12 @@ export class UserService implements OnModuleInit {
         createdAt: 'DESC',
       },
       take: count,
-      skip: offset ? offset : page ? (page - 1) * count : 0,
+      skip: offset !== null ? offset : page ? (page - 1) * count : 0,
       relations: {
         position: true,
         photo: true,
       },
     };
-
-    if (offset) {
-      options.skip = offset;
-    } else if (page) {
-      options.skip = (page - 1) * count;
-    }
 
     const users = await this.entityManager.find(User, options);
     const totalUsers = await this.entityManager.count(User);
@@ -98,24 +92,29 @@ export class UserService implements OnModuleInit {
       photo: `${DOMAIN_NAME}/${user.photo.path}`,
     }));
 
-    const nextPage =
-      options.skip + count < totalUsers ? options.skip + count + 1 : null;
-    const prevPage = options.skip > 0 ? options.skip - count + 1 : null;
-    const currentPage = options.skip / count + 1;
+    const currentPage = Math.floor(options.skip / count) + 1;
+    const nextPageOffset =
+      currentPage * count < totalUsers ? currentPage * count : null;
+    const prevPageOffset = currentPage > 1 ? (currentPage - 2) * count : null;
+
+    const nextPageUrl =
+      nextPageOffset !== null
+        ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${nextPageOffset}`
+        : null;
+    const prevPageUrl =
+      prevPageOffset !== null
+        ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${prevPageOffset}`
+        : null;
 
     return {
       success: true,
-      page: page ? page : currentPage,
+      page: currentPage,
       total_pages: Math.ceil(totalUsers / count),
       total_users: totalUsers,
       count: count,
       links: {
-        next_url: nextPage
-          ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${nextPage}`
-          : null,
-        prev_url: prevPage
-          ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${prevPage}`
-          : null,
+        next_url: nextPageUrl,
+        prev_url: prevPageUrl,
       },
       users: usersResponse,
     };

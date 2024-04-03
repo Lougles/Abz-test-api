@@ -36,13 +36,10 @@ export class UserController {
   async getAllUsers(
     @Query() query: AllUsersRequestModel,
   ): Promise<AllUserResponseModel> {
-    const page = query.page ? parseInt(query.page, 10) : 0;
-    const count = query.count ? parseInt(query.count, 10) : 10;
-    const offset = query.offset ? parseInt(query.offset, 10) : page * count;
     const getAllUsers = await this.userService.getPaginatedUsers(
-      count,
-      offset,
-      page,
+      query.count ? Number(query.count) : null,
+      query.offset ? Number(query.offset) : null,
+      query.page ? Number(query.page) : null,
     );
     return getAllUsers;
   }
