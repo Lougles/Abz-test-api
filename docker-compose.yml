@@ -7,7 +7,6 @@
 #    ports:
 #      - "3001:3001"
 #    environment:
-#      # Добавьте сюда переменные окружения, необходимые для подключения к базе данных
 #      DATABASE_URL: postgres://abz-user:abz-password@abz-server:5432/abz-api
 #    depends_on:
 #      - abz-server

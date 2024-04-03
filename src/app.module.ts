@@ -28,6 +28,10 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', '..', 'uploads'),
       serveRoot: '/uploads/',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'user'),
+      serveRoot: '/user/',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: CONFIG_DB_HOST,

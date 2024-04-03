@@ -1,26 +1,69 @@
 import { EntityManager, FindManyOptions } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { UserRequestModel } from '../controllers/dto/user.request.model';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { ContentFileService } from './content.file.service';
 import { PositionService } from './position.service';
 import {
   CustomExceptions,
   CustomMessageExceptions,
-  CustomValidationException,
 } from '../utils/custom-validation.exception';
 import { AllUserResponseModel } from '../controllers/dto/user.response.model';
 import { DOMAIN_NAME, FULL_DOMAIN_NAME } from '../../config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit{
   constructor(
     private readonly entityManager: EntityManager,
     private readonly tokenService: TokenService,
     private readonly contentFileService: ContentFileService,
     private readonly positionService: PositionService,
   ) {}
+
+  async onModuleInit() {
+    await this.initTestUsers();
+  }
+
+  async initTestUsers() {
+    const usersData = JSON.parse(
+      fs.readFileSync(
+        path.join(__dirname, '..', '..', '..', 'users.json'),
+        'utf8',
+      ),
+    );
+
+    for (const userData of usersData) {
+      const existingUser = await this.entityManager.findOne(User, {
+        where: [{ email: userData.body.email }, { phone: userData.body.phone }],
+      });
+      if (!existingUser) {
+        const userRequestModel: UserRequestModel = {
+          name: userData.body.name,
+          email: userData.body.email,
+          phone: userData.body.phone,
+          position_id: userData.body.position_id,
+        };
+        const photo = {
+          fieldname: userData.photo.fieldname,
+          originalname: userData.photo.originalname,
+          encoding: userData.photo.encoding,
+          mimetype: userData.photo.mimetype,
+          destination: userData.photo.destination,
+          filename: userData.photo.filename,
+          path: userData.photo.path,
+          size: userData.photo.size,
+        };
+        await this.create(
+          photo as Express.Multer.File,
+          userRequestModel,
+          'dummy_token',
+        );
+      }
+    }
+  }
 
   async getPaginatedUsers(count, offset, page): Promise<AllUserResponseModel> {
     const options: FindManyOptions<User> = {

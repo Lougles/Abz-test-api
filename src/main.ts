@@ -44,8 +44,6 @@ async function bootstrap() {
     },
   }));
 
-  // app.useGlobalFilters(new HttpExceptionFilter());
-
   app.setGlobalPrefix('api/v1');
 
   await app.listen(PORT, '0.0.0.0');
