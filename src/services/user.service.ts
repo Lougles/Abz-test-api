@@ -15,7 +15,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 @Injectable()
-export class UserService implements OnModuleInit{
+export class UserService implements OnModuleInit {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly tokenService: TokenService,
@@ -110,10 +110,10 @@ export class UserService implements OnModuleInit{
       count: count,
       links: {
         next_url: nextPage
-          ? `${FULL_DOMAIN_NAME}/users?count=${count}&offset=${nextPage}`
+          ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${nextPage}`
           : null,
         prev_url: prevPage
-          ? `${FULL_DOMAIN_NAME}/users?count=${count}&offset=${prevPage}`
+          ? `${FULL_DOMAIN_NAME}/users/getAll?count=${count}&offset=${prevPage}`
           : null,
       },
       users: usersResponse,
